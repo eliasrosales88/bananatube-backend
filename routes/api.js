@@ -23,8 +23,8 @@ router.post('/registro', function (req, res, next) {
   if (conectado) {
       console.log(req.body);
       var usuario = new User({
-          username: req.body.nombre,
-          hash: req.body.pass
+          username: req.body.username,
+          hash: req.body.hash
       });
       usuario.save(function (err, userdevuelto) {
           if (err) {
