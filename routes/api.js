@@ -19,20 +19,22 @@ router.get('/', function(req, res, next) {
   res.send("hola api");
 });
 
-/* GET registro page. */
+/* POST registro RECIBE LA INFO DEL FORMULARIO DE REGISTRO. */
 router.post('/registro', function (req, res, next) {
   if (conectado) {
       console.log(req.body);
       var usuario = new User({
-          username: req.body.username,
-          hash: req.body.hash
+          username: req.body.username
       });
+      usuario.setPassword(req.body.pass);//ENCRIPTACION DE CONTRASEÑA
       usuario.save(function (err, userdevuelto) {
           if (err) {
               return console.error(err);
           } else {
               console.log("usuario guardado");
               res.setHeader('Content-Type', 'application/json');
+              userdevuelto.salt="";// LA salt SE GUARDA EN LA BBDD PERO SE PRESENTA VACIA EN LA API
+              userdevuelto.hash="";// EL hash SE GUARDA EN LA BBDD PERO SE PRESENTA VACIA EN LA API
               res.send(JSON.stringify(userdevuelto));
           }
       });
