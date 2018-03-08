@@ -13,13 +13,33 @@ db.once('open', function () {
     console.log("Conexion abierta");
     conectado = true;
 });
+var fs = require('fs');
+
+// ESTABLECE LA SESION DE USUARIO
+/*router.use(function(req,res,next){
+    if(conectado){
+        var session=req.session;
+        next();
+    }else{
+        res.render('errorDB', {
+            title: 'Mongo No arrancado',
+            message: 'Mongo No arrancado',
+            error:"No se ha podido conectar a la BBDD"
+        });
+    }
+});
+
+function cogeLogin(session){
+    return session.usuario;
+}*/
+
 
 /* GET api page. */
 router.get('/', function(req, res, next) {
   res.send("hola api");
 });
 
-/* POST registro RECIBE LA INFO DEL FORMULARIO DE REGISTRO. */
+/* POST REGISTRO - RECIBE LA INFO DEL FORMULARIO DE REGISTRO. */
 router.post('/registro', function (req, res, next) {
   if (conectado) {
       console.log(req.body);
@@ -55,8 +75,98 @@ router.post('/registro', function (req, res, next) {
 
 });
 
-/* GET VIDEO page. */
-router.post('/video/nuevo', function (req, res, next) {
+/* POST LOGIN - REALIZA EL LOGIN DEL USUARIO */
+router.post('/login', function (req, res, next) {
+    if (conectado) {
+        //console.log(req.body);
+        var usuario = new User({
+            username: req.body.username,
+            hash: req.body.pass
+        });
+        var objeto = {
+
+        };
+        objeto.username = usuario.username;
+        User.findOne(
+            objeto,
+            function (err, user) {
+                if (err) return console.error(err);
+                //console.log(user);
+                if(user!=null && user.validPassword(usuario.hash)){
+                    //login correcto
+                    res.setHeader('Content-Type', 'application/json');
+                    //guardo el objeto en sesión
+                    var session=req.session;
+                    session.usuario=user;
+                    //EVITAMOS QUE DEVUELVA LA CONTRASEÑA
+                    user.hash="";
+                    user.salt="";
+                    console.log(user);
+                    res.send(JSON.stringify(user));
+                }else{
+                    //login incorrecto
+                    res.send("Login incorrecto");
+                } 
+            }
+        );
+        /*
+        usuario.save(function (err, userdevuelto) {
+            if (err) {
+                return console.error(err);
+            } else {
+                console.log("usuario guardado");
+                res.setHeader('Content-Type', 'application/json');
+                res.send(JSON.stringify(userdevuelto));
+            }
+        });
+        */
+    } else {
+        res.render('errorDB', {
+            title: 'Mongo No arrancado'
+        });
+    }
+
+});
+
+router.get('/loginCheck', function (req, res, next) {
+    if (conectado) {
+        var session=req.session;
+        res.setHeader('Content-Type', 'application/json');
+        var objetoDevuelto={
+            login:true,
+            
+        };
+        if(session.usuario){
+            objetoDevuelto.usuario=session.usuario;
+            res.send(JSON.stringify(objetoDevuelto));
+        }else{
+            objetoDevuelto.login=false;
+            res.send(JSON.stringify(objetoDevuelto));
+        }
+    } else {
+        res.render('errorDB', {
+            title: 'Mongo No arrancado'
+        });
+    }
+
+});
+
+router.get('/logout', function (req, res, next) {
+    if (conectado) {
+        var session=req.session;
+        delete session.usuario;
+        res.send("Adiós");
+        
+    } else {
+        res.render('errorDB', {
+            title: 'Mongo No arrancado'
+        });
+    }
+
+});
+
+/* POST VIDEO page. */
+router.post('/video/nuevo/subida', function (req, res, next) {
     if (conectado) {
         console.log(req.body);
         var video = new Video({
@@ -83,5 +193,34 @@ router.post('/video/nuevo', function (req, res, next) {
     }
   
   });
+
+/* GET FORMULARIO SUBIDA VIDEO page. */
+router.get("/uploadFileForm",function(req,res){
+console.log("presentando Formulario");
+res.render("upload", {
+    title: 'Subir Fichero'
+});
+});
+
+/* POST FORMULARIO SUBIDA VIDEO page. */
+router.post("/uploadFile",function(req,res){
+    //console.log(req.files);
+    if (!req.files){
+        console.log(req.files);
+        return res.status(400).send('No files were uploaded.');
+    }
+  // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+    let sampleFile = req.files.mp4;
+    //console.log(req.files);
+    //console.log(sampleFile);
+    var newpath = __dirname+'/../public/uploads/' + sampleFile.name;
+    var rutaVideo = 'uploads/' + sampleFile.name;
+    sampleFile.mv(newpath, function(err) {
+        if (err){
+          return res.status(500).send(err);
+        }
+        res.send(rutaVideo);
+      });
+   });
 
 module.exports = router;
