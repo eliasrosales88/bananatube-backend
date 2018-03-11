@@ -10,7 +10,7 @@ var User = require("../models/user");// CON MONGOOSE ES REQUERIO SIEMPRE TENER U
 var Video = require("../models/video");
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
-    console.log("Conexion abierta");
+    console.log("Conexion abierta"); 
     conectado = true;
 });
 var fs = require('fs');
@@ -164,6 +164,25 @@ router.get('/logout', function (req, res, next) {
     }
 
 });
+
+/* GET PERFIL page. */
+router.get('/perfil/:id', function(req, res, next) {
+    var id = req.params.id;
+    //res.send(usuario);
+    User.findById(id, function (err, user) {
+        console.log(user);
+        user.salt = "";
+        user.hash = "";
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify(user));
+    });
+
+
+  
+  });
+
+
+
 
 /* POST VIDEO page. */
 router.post('/video/nuevo/subida', function (req, res, next) {

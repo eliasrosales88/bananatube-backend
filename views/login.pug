@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1= title
+  p Haz inicio de sesion
+  form(action="/api/login", method="post")
+    label(for="username") Nombre de Usuario
+    input(type="text", name="username", id="username")
+    label(for="pass") Password
+    input(type="password", name="pass", id="pass" )
+    input(type="submit", value="Enviar", id="botonLogin")
+  
