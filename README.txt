@@ -1,47 +1,45 @@
-DOCUMENTACION BANANATUBE-BACKEND API
-
 /////////////////////////////////////////////////////
-	INFORMACION DE LA API
-
-GET	muestra la info de la api						
-	/api/	
-
+/                                                   /
+/		DOCUMENTACION BANANATUBE-BACKEND API		/
+/                                                   /
 /////////////////////////////////////////////////////
-	HOMEPAGE
 
-GET	Renderiza página de inicio con la lista de todos los videos					
-	/
 
-/////////////////////////////////////////////////////
-	REGISTRO Y LOGIN
+GET		Muestra la info de la api						
+		/api/	
 
-POST	envía los datos de registro						
-	/api/registro
 
-POST	envía datos de login y compara si existe en la BBDD. Si existe da acceso	
-	/api/login
+GET		Renderiza pï¿½gina de inicio
+		/
 
-GET	verifica si el usuario mantiene una sesión iniciada. De ser así devuelve true	
-	/api/loginCheck
-		{"login":true}
-		{"login":false}
-GET	cierra la sesión							
-	/api/logout
+POST	Envï¿½a los datos de registro	y los almacena en BBDD					
+		/api/registro
 
-/////////////////////////////////////////////////////
-	CRUD DE VIDEO
+POST	Envï¿½a datos de login y compara si existe en la BBDD. Si existe da acceso	
+		/api/login
 
-POST	Vista de formulario de subida de video						
-	/video/nuevo
+GET		Verifica si el usuario mantiene una sesiï¿½n iniciada. De ser asï¿½ devuelve true	
+		/api/loginCheck
 
-POST  C	Almacena la ruta del video en la BBDD. Next					
-	/video/nuevo/subida
+GET		cierra la sesiï¿½n							
+		/api/logout
 
-GET    R 	Next. Devuelve la vista del video según ID					
-	/video/:id
+GET		Muestra el perfil del usuario con sesion iniciada							
+		/api/perfil/:id
 
-POST  U	Edita la descripción del video. Compara si el usuario que edita corresponde con el autor	
-	/video/edicion/:id
+POST	Registra los datos iniciales del video en la BBDD (carga en dos etapas)
+		/api/subirVideo
 
-POST  D	Elimina el video de la BBDD							
-	/video/eliminar/:id
+POST C	Sube el archivo de video y almacena la URL de la ubicacion del video en la BBDD.
+		/api/uploadFile
+
+GET  R 	Devuelve una lista de videos segun el usuario que tenga la sesion iniciada					
+		/api/user/videos/:id
+
+PENDIENTES
+------------------------------------------------------
+POST U	Edita la descripciï¿½n del video. Compara si el usuario que edita corresponde con el autor	
+		/api/video/edicion/:id
+
+POST D	Elimina el video de la BBDD							
+		/api/video/eliminar/:id
