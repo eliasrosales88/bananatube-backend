@@ -6,8 +6,8 @@ var crypto = require('crypto');
 
 
 var VideoSchema = new mongoose.Schema({
-    titulo: String,
-    descripcion: String,
+    titulo: {type: String, required: [true, "can't be blank"]},
+    descripcion: {type: String, required: [true, "can't be blank"]},
     url: String,
     autor: String,
     activo: Boolean
