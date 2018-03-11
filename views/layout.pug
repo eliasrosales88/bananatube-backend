@@ -5,6 +5,7 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
     script(src="/javascripts/jquery-3.3.1.js")
     script(src="/javascripts/main.js")
+    script(src="/javascripts/users.js")
   body
     nav
       ul
@@ -19,5 +20,9 @@ html
         li
           a(href="/api/loginCheck") Login Check
         li
+          a(href="#" id="perfil") Perfil
+        li
           a(href="/api/logout") Logout
+        li
+          a(href="/subirVideo") Subir Video
 block content

@@ -26,5 +26,9 @@ router.get('/perfil/:id', function(req, res, next) {
   res.render('perfil', { title: 'Logout' });
 });
 
+/* GET PERFIL page. */
+router.get('/subirVideo/', function(req, res, next) {
+  res.render('subirVideo', { title: 'Subir Video' });
+});
 
 module.exports = router;

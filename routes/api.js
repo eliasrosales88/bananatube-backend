@@ -176,33 +176,32 @@ router.get('/perfil/:id', function(req, res, next) {
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify(user));
     });
-
-
-  
   });
 
 
 
 
 /* POST VIDEO page. */
-router.post('/video/nuevo/subida', function (req, res, next) {
+router.post('/subirVideo', function (req, res, next) {
     if (conectado) {
-        console.log(req.body);
+        //console.log(req.body);
+        var session = req.session;
+        //console.log(session.usuario);
         var video = new Video({
             titulo: req.body.titulo,
             descripcion: req.body.descripcion,
-            url: req.body.url,
-            autor: req.body.autor,
-            activo: req.body.activo,
+            url: "",
+            autor: session.usuario._id,
+            activo: true,
         });
         video.save(function (err, videodevuelto) {
             if (err) {
                 return console.error(err);
             } else {
-                console.log("usuario guardado");
-                res.setHeader('Content-Type', 'application/json');
-                res.send(JSON.stringify(videodevuelto));
-                
+                console.log("Video guardado");
+                //res.setHeader('Content-Type', 'application/json');
+                //res.send(JSON.stringify(videodevuelto));
+                res.render("upload");
             }
         });
     } else {
@@ -210,16 +209,7 @@ router.post('/video/nuevo/subida', function (req, res, next) {
             title: 'Mongo No arrancado'
         });
     }
-  
   });
-
-/* GET FORMULARIO SUBIDA VIDEO page. */
-router.get("/uploadFileForm",function(req,res){
-console.log("presentando Formulario");
-res.render("upload", {
-    title: 'Subir Fichero'
-});
-});
 
 /* POST FORMULARIO SUBIDA VIDEO page. */
 router.post("/uploadFile",function(req,res){
@@ -237,8 +227,16 @@ router.post("/uploadFile",function(req,res){
     sampleFile.mv(newpath, function(err) {
         if (err){
           return res.status(500).send(err);
+        }else{
+            var id = "5aa54e1690a76e0568daa844";
+            Video.findByIdAndUpdate(id, { url: rutaVideo },{new: true}, function (err, video) {
+                console.log(video);
+                res.setHeader('Content-Type', 'application/json');
+                res.send(JSON.stringify(video));
+            });
+            
+            //res.send(rutaVideo);
         }
-        res.send(rutaVideo);
       });
    });
 

@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  h1= title
+  p Llena los datos iniciales del video y luego haz click en subir video. Podras elegir el video a subir y terminar el proceso.
+  form(action="/api/subirVideo", method="post")
+    label(for="titulo") Por favor indica un titulo para tu video
+    input(type="text", name="titulo", id="titulo")
+    label(for="descripcion") Indica una descripcion
+    input(type="text", name="descripcion", id="descripcion" )
+    input(type="hidden", name="url", id="url" )
+    input(type="hidden", name="autor" id="autor")
+    input(type="hidden", name="activo" id="activo")
+    input(type="submit", value="Enviar", id="botonSubirVideo")

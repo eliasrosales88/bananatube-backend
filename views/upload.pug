@@ -1,0 +1,8 @@
+extends layout
+
+
+block content
+  h1=title
+  form(id="upload",action="/api/uploadFile",method="post",enctype="multipart/form-data")
+    input(id="fichero",type="file",name="filetoupload",multiple="multiple")
+    input(id="botonSubirVideo",name="submit",type="submit",value="enviar")
