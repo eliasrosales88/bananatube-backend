@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////
 /                                                   /
-/		DOCUMENTACION BANANATUBE-BACKEND API		/
+/       DOCUMENTACION BANANATUBE-BACKEND API        /
 /                                                   /
 /////////////////////////////////////////////////////
 
