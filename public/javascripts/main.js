@@ -22,8 +22,10 @@ function registro(evento){
     evento.preventDefault();
     var datosRegistro = {};
     var username = $("#username").val();
+    var email = $("#email").val();
     var pass = $("#pass").val();
     datosRegistro.username = username;
+    datosRegistro.email = email;
     datosRegistro.pass = pass;
     console.log(datosRegistro);
 
@@ -86,6 +88,25 @@ function init(){
     $("#botonRegistro").click(registro);
     $("#botonLogin").click(login);
     $("#perfil").click(irAPerfil);
+
+    if (location.href.match(/http:|localhost.*:3000|videos/)) {
+        $.get("/api/videos", function(videos){
+            var allVideos = videos;
+            console.log(allVideos)
+            for (const video of allVideos) {
+                $("#contenidoVideos").append(`
+                <div>${video.titulo}</div>
+                <div>${video.descripcion}</div>
+                <div>${video.autor}</div>
+                <div>${video.url}</div>
+                <video width="320" height="240" controls>
+                <source src="${video.url}" type="video/mp4">
+                </video>
+                </hr>
+                `)
+            }
+        })
+    }
 
 }
 

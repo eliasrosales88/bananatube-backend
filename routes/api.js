@@ -15,7 +15,7 @@ db.once('open', function () {
 });
 var fs = require('fs');
 
-// ESTABLECE LA SESION DE USUARIO
+// ESTABLECE LA SESION DE USUARIO -------- NO USAR NO FUNCIONA
 /*router.use(function(req,res,next){
     if(conectado){
         var session=req.session;
@@ -28,23 +28,27 @@ var fs = require('fs');
         });
     }
 });
-
 function cogeLogin(session){
     return session.usuario;
 }*/
+//------------------------------------------------------------
 
 
-/* GET api page. */
+
+/* GET INICIO - DEVUELVE LA DOCUMENTACION DE LA API. */
 router.get('/', function(req, res, next) {
   res.send("hola api");
 });
+//---------------------------------------------------------------
 
-/* POST REGISTRO - RECIBE LA INFO DEL FORMULARIO DE REGISTRO. */
+
+/* POST REGISTRO DE USUARIO - RECIBE LA INFO DEL FORMULARIO DE REGISTRO. */
 router.post('/registro', function (req, res, next) {
   if (conectado) {
       console.log(req.body);
       var usuario = new User({
-          username: req.body.username
+          username: req.body.username,
+          email: req.body.email
       });
       usuario.setPassword(req.body.pass);//ENCRIPTACION DE CONTRASEÑA
       usuario.save(function (err, userdevuelto) {
@@ -63,7 +67,8 @@ router.post('/registro', function (req, res, next) {
           title: 'Mongo No arrancado'
       });
   }
-  
+
+  /*ESTE CODIGO COMPARA CAMPOS DE FORMULARIO PUEDE USARSE PARA CONFIRMAR CONSTRASENA */
   /*if (req.body.nombre === "admin" && req.body.password === "admin") {
       var resultado = {result: true};
       res.send(resultado);
@@ -74,8 +79,10 @@ router.post('/registro', function (req, res, next) {
 
 
 });
+//---------------------------------------------------------------
 
-/* POST LOGIN - REALIZA EL LOGIN DEL USUARIO */
+
+/* POST LOGIN DE USUARIO - REALIZA EL LOGIN DEL USUARIO */
 router.post('/login', function (req, res, next) {
     if (conectado) {
         //console.log(req.body);
@@ -127,7 +134,10 @@ router.post('/login', function (req, res, next) {
     }
 
 });
+//---------------------------------------------------------------
 
+
+/*GET LOGINCHECK - VALIDA SI EL USUARIO ESTA LOGUEADO */
 router.get('/loginCheck', function (req, res, next) {
     if (conectado) {
         var session=req.session;
@@ -150,7 +160,10 @@ router.get('/loginCheck', function (req, res, next) {
     }
 
 });
+//---------------------------------------------------------------
 
+
+/*GET  LOGOUT - CIERRA SESION */
 router.get('/logout', function (req, res, next) {
     if (conectado) {
         var session=req.session;
@@ -164,8 +177,10 @@ router.get('/logout', function (req, res, next) {
     }
 
 });
+//---------------------------------------------------------------
 
-/* GET PERFIL page. */
+
+/* GET PERFIL - MUESTRA EL PERFIL DEL USUARIO CON SESION INICIADA. */
 router.get('/perfil/:id', function(req, res, next) {
     var id = req.params.id;
     //res.send(usuario);
@@ -176,12 +191,11 @@ router.get('/perfil/:id', function(req, res, next) {
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify(user));
     });
-  });
+});
+//---------------------------------------------------------------
 
 
-
-
-/* POST VIDEO page. */
+/* POST SUBIDA VIDEO - REGISTRA LOS DATOS INICIALES DEL VIDEO. */
 router.post('/subirVideo', function (req, res, next) {
     if (conectado) {
         //console.log(req.body);
@@ -210,8 +224,10 @@ router.post('/subirVideo', function (req, res, next) {
         });
     }
   });
+//---------------------------------------------------------------
 
-/* POST FORMULARIO SUBIDA VIDEO page. */
+
+/* POST SUBE EL ARCHIVO DE VIDEO - FORMULARIO SUBIDA VIDEO. */
 router.post("/uploadFile",function(req,res){
     //console.log(req.files);
     if (!req.files){
@@ -228,16 +244,50 @@ router.post("/uploadFile",function(req,res){
         if (err){
           return res.status(500).send(err);
         }else{
-            var id = "5aa54e1690a76e0568daa844";
-            Video.findByIdAndUpdate(id, { url: rutaVideo },{new: true}, function (err, video) {
+            var session = req.session;
+            var idUser = session.usuario._id;
+            //console.log(session.usuario._id);
+        
+            Video.findOneAndUpdate({ autor: idUser }, { url :rutaVideo}, { sort: { createdAt : -1 } }, function(err, video) {
                 console.log(video);
-                res.setHeader('Content-Type', 'application/json');
-                res.send(JSON.stringify(video));
+                
+                res.send(video);
             });
             
-            //res.send(rutaVideo);
         }
-      });
-   });
+    });
+});
+//---------------------------------------------------------------
+
+
+/*GET VIDEOS DEL USUARIO - MUESTRA VIDEOS PARTICULARES DEL USUARIO CON SESION INICIADA */
+router.get("/user/videos/:id", function(req, res, next){
+    var idUser = req.params.id;
+    console.log(idUser);
+    Video.find({ autor: idUser }, function(err, video) {
+        console.log(video);
+        
+       res.send(video);
+    });
+});
+//---------------------------------------------------------------
+
+
+
+/*GET TODOS LOS VIDEOS */
+router.get("/videos", function(req, res){
+    Video.find({}, function(err, videos){
+        res.send(videos);
+    });
+})
+//---------------------------------------------------------------
+
+
+/*GET VISTA DE VIDEO PARTICULAR */
+router.get("/video/:id", function(req, res){
+    Video.find({}, function(err, videos){
+        res.render("video");
+    });
+})
 
 module.exports = router;

@@ -6,6 +6,8 @@ block content
   form(action="/api/registro", method="post")
     label(for="username") Nombre de Usuario
     input(type="text", name="username", id="username")
+    label(for="email") Correo electronico
+    input(type="email", name="email", id="email" required)
     label(for="pass") Password
     input(type="password", name="pass", id="pass" )
     input(type="submit", value="Enviar", id="botonRegistro")

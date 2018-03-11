@@ -26,9 +26,14 @@ router.get('/perfil/:id', function(req, res, next) {
   res.render('perfil', { title: 'Logout' });
 });
 
-/* GET PERFIL page. */
+/* GET FORMULARIO PARA SUBIR VIDEO page. */
 router.get('/subirVideo/', function(req, res, next) {
   res.render('subirVideo', { title: 'Subir Video' });
+});
+
+/* GET TODOS LOS VIDEOS page. */
+router.get('/videos', function(req, res, next) {
+  res.render('videos', { title: 'Todos los videos' });
 });
 
 module.exports = router;
