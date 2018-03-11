@@ -155,7 +155,7 @@ router.get('/logout', function (req, res, next) {
     if (conectado) {
         var session=req.session;
         delete session.usuario;
-        res.send("Adiós");
+        res.render("logout", {title: "Adios!"});
         
     } else {
         res.render('errorDB', {
