@@ -9,6 +9,7 @@ var fileUpload = require('express-fileupload');
 var session = require('express-session');
 var user = require('./models/user');
 var fileUpload = require('express-fileupload');
+var cors = require('cors');
 
 //ROUTES
 var index = require('./routes/index');
@@ -42,9 +43,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// use it before all route definitions
+app.use(cors({origin: 'http://localhost:4200', credentials: true}));
+
 app.use('/', index);
 app.use('/users', users);
 app.use('/api', api);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
